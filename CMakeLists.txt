@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+#cmake_minimum_required(VERSION 3.20)
 project(pyStag)
 
 IF(NOT CMAKE_BUILD_TYPE)
@@ -17,20 +17,21 @@ CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
 
 
 add_compile_options(-std=c++11 -fPIC -O3)
+#add_compile_options(-fPIC )
 
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-find_package(OpenCV 3 REQUIRED)
+find_package(OpenCV 4 REQUIRED)
 
 
-file(GLOB SRC_FILE1 "src/*.c*")
-file(GLOB SRC_FILE2 "src/ED/*.c*")
+file(GLOB SRC_FILE1 "stag/*.c*")
+file(GLOB SRC_FILE2 "stag/ED/*.c*")
 
 include_directories(
     ${OpenCV_INCLUDE_DIRS}
-    src/
-    src/ED/
+    stag/
+    stag/ED/
 )
 add_library(
     LibStag STATIC
@@ -49,16 +50,16 @@ set(CMAKE_MODULE_PATH
 
 find_package(NumPy REQUIRED)
 
-add_subdirectory(pybind11)
-include_directories("pybind11/include")
-include_directories("pybind11_opencv_numpy")
+add_subdirectory(extern/pybind11)
+include_directories("extern/pybind11/include")
+include_directories("extern/pybind11_opencv_numpy")
 
 
 # for pybind11 
 
 pybind11_add_module(pyStag 
 pyStag.cpp
-pybind11_opencv_numpy/ndarray_converter.cpp
+extern/pybind11_opencv_numpy/ndarray_converter.cpp
 )
 
 target_link_libraries(pyStag PRIVATE
